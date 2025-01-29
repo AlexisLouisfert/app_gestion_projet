@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: 1280px;
+}
+
+aside {
+    width: 200px;
+}
