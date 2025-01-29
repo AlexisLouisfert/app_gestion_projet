@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function BackSprints() {
     const [sprints, setSprints] = useState([]);
-    const [newSprint, setNewSprint] = useState({ name: "", duration: 0 });
+    const [newSprint, setNewSprint] = useState({ name: "", status: 0 });
 
     useEffect(() => {
         async function fetchSprints() {
@@ -24,7 +24,7 @@ export function BackSprints() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newSprint),
             });
-            setNewSprint({ name: "", duration: 0 });
+            setNewSprint({ name: "", status: 0 });
         } catch (error) {
             console.error("Erreur lors de la création du sprint :", error);
         }
@@ -42,14 +42,14 @@ export function BackSprints() {
             <input
                 type="number"
                 placeholder="Durée (jours)"
-                value={newSprint.duration}
-                onChange={(e) => setNewSprint({ ...newSprint, duration: Number(e.target.value) })}
+                value={newSprint.status}
+                onChange={(e) => setNewSprint({ ...newSprint, status: Number(e.target.value) })}
             />
             <button onClick={createSprint}>Créer un sprint</button>
 
             <ul>
                 {sprints.map((sprint: any) => (
-                    <li key={sprint._id}>{sprint.name} - {sprint.duration} jours</li>
+                    <li key={sprint._id}>{sprint.name} - {sprint.status} jours</li>
                 ))}
             </ul>
         </>

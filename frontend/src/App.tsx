@@ -1,11 +1,6 @@
 import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
 import "./App.css";
-import { Counters } from "./pages/Counters";
-import { Trips } from "./pages/Trips";
 import { Home } from "./pages/Home";
-import { Contacts } from "./pages/Contacts";
-import { createContact, getContacts } from "./contacts";
-import UserPage from "./pages/UserPage";
 import { BackUsers } from "./pages/BackUsers";
 import { BackProjects } from "./pages/BackProjects";
 import { BackStories } from "./pages/BackStories";
@@ -27,30 +22,6 @@ function App() {
       </div>
       ),
       children: [
-        {
-          path: "/counters",
-          element: <Counters/>
-        },
-        {
-          path: "/trips",
-          element: <Trips/>
-        },
-        {
-          path: "/contacts",
-          element: <Contacts/>,
-          loader: async () => {
-            const contacts = await getContacts();
-            return { contacts };
-          },
-          action: async () => {
-            const contact = await createContact();
-            return { contact };
-          }
-        },
-        {
-          path: "/users",
-          element: <UserPage/>
-        },
         {
           path: "/back",
           element: <BackUsers/>

@@ -7,6 +7,12 @@ export const createProjectRoutes = () => {
     const projectRoutes = Router()
     projectRoutes.post('/', (req, res, next) => {
         try {
+          if (req.body.sprints) {
+            req.body.sprints.forEach((sprint: any) => {
+              sprint.startDate = new Date(sprint.startDate)
+              sprint.endDate = new Date(sprint.endDate)
+            })
+          }
           const projectD = projectSchema.parse(req.body)
           const newProject = new DbProject(projectD)
           newProject.save()
