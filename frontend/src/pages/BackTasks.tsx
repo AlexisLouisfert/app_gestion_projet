@@ -1,59 +1,112 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Button, Box, Typography, Chip } from '@mui/material';
+import type { Task } from '../types';
+import TaskForm from '../component/TaskForm';
 
-export function BackTasks() {
-    const [tasks, setTasks] = useState([]);
-    const [newTask, setNewTask] = useState({ title: "", status: "To Do" });
+export default function BackTasks() {
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<Task | undefined>();
+    const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
         async function fetchTasks() {
-            try {
-                const data = await fetch("http://localhost:3000/tasks")
-                    .then(res => res.json());
-                setTasks(data);
-            } catch (error) {
-                console.error("Erreur lors de la récupération des tâches :", error);
-            }
+            const data = await fetch("http://localhost:3000/tasks")
+                .then(res => res.json());
+            const formattedData = data.map((task: any) => ({
+                id: task._id,
+                name: task.name,
+                description: task.description,
+                status: task.status,
+            }));
+            setTasks(formattedData);
         }
         fetchTasks();
+        const interval = setInterval(fetchTasks, 1000);
+        return () => clearInterval(interval);
     }, []);
 
-    async function createTask() {
+    const handleDelete = async (id: string) => {
         try {
-            await fetch("http://localhost:3000/tasks", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newTask),
-            });
-            setNewTask({ title: "", status: "To Do" });
+            const response = await fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" });
+            if (!response.ok) throw new Error("Erreur de suppression");
+            setTasks(tasks.filter(task => task.id !== id));
         } catch (error) {
-            console.error("Erreur lors de la création de la tâche :", error);
+            console.error("Erreur:", error);
         }
-    }
+    };
+
+    const columns: GridColDef[] = [
+        { field: 'name', headerName: 'Nom', flex: 1 },
+        { field: 'description', headerName: 'Description', flex: 2 },
+        {
+            field: 'status',
+            headerName: 'Statut',
+            flex: 1,
+            renderCell: (params) => {
+                const statusColors: Record<string, "default" | "primary" | "warning" | "success"> = {
+                    "todo": "default",
+                    "in-progress": "warning",
+                    "done": "success"
+                };
+                return <Chip label={params.value} color={statusColors[params.value] || "default"} />;
+            }
+        },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            flex: 1,
+            renderCell: (params) => {
+                return (
+                    <Box>
+                        <Button size="small" color="primary" onClick={() => {
+                            setSelectedTask(params.row);
+                            setIsFormOpen(true);
+                        }}>
+                            Éditer
+                        </Button>
+                        <Button size="small" color="error" onClick={() => handleDelete(params.row.id)}>
+                            Supprimer
+                        </Button>
+                    </Box>
+                );
+            },
+        },
+    ];
+
+    const handleFormSubmit = (data: Partial<Task>) => {
+        console.log('Form submitted:', data);
+        setIsFormOpen(false);
+        setSelectedTask(undefined);
+    };
+
+    const handleFormClose = () => {
+        setIsFormOpen(false);
+        setSelectedTask(undefined);
+    };
 
     return (
-        <>
-            <h1>Gestion des Tâches</h1>
-            <input
-                type="text"
-                placeholder="Titre de la tâche"
-                value={newTask.title}
-                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+        <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h4">Tasks</Typography>
+                <Button variant="contained" onClick={() => setIsFormOpen(true)}>
+                    Nouvelle Task
+                </Button>
+            </Box>
+            <DataGrid
+                rows={tasks}
+                columns={columns}
+                initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+                pageSizeOptions={[5, 10, 25]}
+                disableRowSelectionOnClick
+                autoHeight
             />
-            <select
-                value={newTask.status}
-                onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-            >
-                <option value="To Do">To Do</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Done">Done</option>
-            </select>
-            <button onClick={createTask}>Créer une tâche</button>
-
-            <ul>
-                {tasks.map((task: any) => (
-                    <li key={task._id}>{task.title} - {task.status}</li>
-                ))}
-            </ul>
-        </>
+            <TaskForm
+                open={isFormOpen}
+                onClose={handleFormClose}
+                onSubmit={handleFormSubmit}
+                initialData={selectedTask}
+            />
+        </Box>
     );
 }

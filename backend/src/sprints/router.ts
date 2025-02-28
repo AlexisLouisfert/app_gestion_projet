@@ -1,41 +1,20 @@
 import { NextFunction, Request, Router } from "express"
-import { DbSprint, dbSprintSchema } from "./db/models"
+import { DbSprint } from "./db/models"
 import { StatusCodes } from "http-status-codes"
-import { sprintSchema } from "./models"
 
-export const createSprintRoutes = () => {
-    const sprintRoutes = Router()
-    sprintRoutes.post('/', (req, res, next) => {
-        try {
-          const sprintD = sprintSchema.parse(req.body)
-          const newSprint = new DbSprint(sprintD)
-          newSprint.save()
-          res.sendStatus(StatusCodes.CREATED)
-        } catch (error) {
-          console.log(error);
-          next(error)
-        }
-      }
-    )
 
-    sprintRoutes.put('/:id', async (req, res, next) => {
+export const createSprintsRoutes = () => {
+    const SprintRoutes = Router()
+    SprintRoutes.post(
+      '/createSprint',
+      ( req,
+        res,
+        next
+      ) => {
         try {
-          console.log('body',req.body);
-          const sprintD = sprintSchema.parse(req.body)
-          let sprint = await DbSprint.updateOne({_id:req.params.id},sprintD)
-          res.sendStatus(StatusCodes.CREATED)
-        } catch (error) {
-          console.log(error);
-          next(error)
-        }
-      }
-    )
-
-    sprintRoutes.get('/:id', async (req, res, next) => {
-        try {
-            let sprint = await DbSprint.findById(req.params.id)
-            sprint?.populate('leader')
-            res.json(sprint)
+            const newSprint = new DbSprint(req.body)
+            newSprint.save()
+            res.sendStatus(StatusCodes.CREATED)
         } catch (error) {
             console.log(error);
             next(error)
@@ -43,26 +22,72 @@ export const createSprintRoutes = () => {
       }
     )
 
-    sprintRoutes.get('/', async (req, res, next) => {
-        try {
-            let sprints = await DbSprint.find().limit(20).populate('leader','_id name email')
-            res.json(sprints)
-        } catch (error) {
-            console.log(error);
-            next(error)
+      
+    SprintRoutes.put(
+        '/:id',
+        async ( req,
+          res,
+          next
+        ) => {
+          try {
+            console.log("body",req.body);
+            
+              let sprints = await DbSprint.updateOne({_id:req.params.id},req.body)
+              res.sendStatus(StatusCodes.CREATED)
+          } catch (error) {
+              console.log(error);
+              next(error)
+          }
         }
-      }
-    )
-
-    sprintRoutes.delete('/:id', async (req, res, next) => {
-        try {
-            await DbSprint.deleteOne(req.body.id)
-            res.sendStatus(StatusCodes.OK)
-        } catch (error) {
-            console.log(error);
-            next(error)
+      )
+  
+      SprintRoutes.get(
+        '/:id',
+        async ( req,
+          res,
+          next
+        ) => {
+          try {
+              let sprints = await DbSprint.findById(req.params.id)
+              sprints?.populate('startDate','endDate')
+              res.json(sprints)
+          } catch (error) {
+              console.log(error);
+              next(error)
+          }
         }
-      }
-    )
-    return sprintRoutes
+      )
+  
+      SprintRoutes.get(
+        '/',
+        async ( req,
+          res,
+          next
+        ) => {
+          try {
+              let stories = await DbSprint.find().limit(20).populate('startDate')
+              res.json(stories)
+          } catch (error) {
+              console.log(error);
+              next(error)
+          }
+        }
+      )
+  
+      SprintRoutes.delete(
+        '/:id',
+        async ( req,
+          res,
+          next
+        ) => {
+          try {
+              await DbSprint.deleteOne({_id:req.params.id})
+              res.sendStatus(StatusCodes.OK)
+          } catch (error) {
+              console.log(error);
+              next(error)
+          }
+        }
+      )
+    return SprintRoutes
 }

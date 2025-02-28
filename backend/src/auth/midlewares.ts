@@ -3,7 +3,7 @@ import createHttpError from "http-errors"
 import { StatusCodes } from 'http-status-codes'
 import { verify } from 'jsonwebtoken'
 import { DbUser } from './db/models'
-import { TokenData } from './model'
+import { TokenData } from './models'
 import { addAccessToken, addRefreshToken, createTokenUser, createUserFingerprint } from './util'
 
 export const checkAccessToken = async (

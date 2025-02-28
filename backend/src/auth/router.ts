@@ -6,7 +6,7 @@ import { decode } from 'jsonwebtoken'
 import { DbUser } from './db/models'
 import { blackListAccessToken, blackListRefreshToken } from './db/util'
 import { checkAccessToken, checkRefreshToken } from './midlewares'
-import { LoginData, SignupData, TokenData, UserData } from './model'
+import { LoginData, SignupData, TokenData, UserData,Role } from './models'
 import { addAccessToken, addRefreshToken, createTokenUser, createUserFingerprint } from './util'
 
 declare module 'express' {
@@ -56,6 +56,7 @@ export const createAuthRoutes = () => {
       const { email, password } : LoginData = req.body
       try {
         const dbUser = await DbUser.findOne({ email })
+        console.log(dbUser);
         if (!dbUser) {
           next(createHttpError(StatusCodes.UNAUTHORIZED))
           return
@@ -67,7 +68,7 @@ export const createAuthRoutes = () => {
         }
 
         const accessToken : string = req.signedCookies[process.env.JWT_ACCESS_TOKEN_NAME!]
-        
+  
         if(accessToken!=undefined && accessToken!="undefined" && accessToken!=""){
           const data = decode(accessToken) as TokenData
           blackListAccessToken(data.user,accessToken)

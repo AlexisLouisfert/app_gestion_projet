@@ -5,11 +5,11 @@ import { checkAccessToken } from './auth/midlewares'
 import { createAuthRoutes } from './auth/router'
 import {HttpError} from "http-errors"
 import { createProjectRoutes } from './projects/router'
+import { createStoriesRoutes } from './stories/router'
+import { createSprintsRoutes } from './sprints/router'
+import { createTasksRoutes } from './tasks/router'
 import errorHandler from "errorhandler"
 import { createUserRoutes } from './users/router'
-import { createStoryRoutes } from './stories/router'
-import { createSprintRoutes } from './sprints/router'
-import { createTaskRoutes } from './tasks/router'
 import helmet from 'helmet'
 import lusca from 'lusca'
 import cors from 'cors'
@@ -27,9 +27,9 @@ export const createApp = () => {
 
   app.use(createAuthRoutes())
   app.use('/projects',createProjectRoutes())
-  app.use('/stories',createStoryRoutes())
-  app.use('/sprints',createSprintRoutes())
-  app.use('/tasks',createTaskRoutes())
+  app.use('/stories',createStoriesRoutes())
+  app.use('/sprints',createSprintsRoutes())
+  app.use('/tasks',createTasksRoutes())
   app.use('/users',createUserRoutes())
   app.get('/', (req: express.Request, res: express.Response) => {
     res.send('Hello World!')

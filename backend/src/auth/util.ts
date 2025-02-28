@@ -2,7 +2,7 @@ import { hash } from 'bcrypt'
 import { Request, Response } from 'express'
 import { JwtPayload, sign, verify, } from 'jsonwebtoken'
 import { DbUser } from './db/models'
-import { TokenData, UserData } from './model'
+import { TokenData, UserData } from './models'
 
 
 export function createAccessToken(user : TokenData){

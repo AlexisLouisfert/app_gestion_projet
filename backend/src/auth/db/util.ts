@@ -1,5 +1,5 @@
 import { JwtPayload, verify } from "jsonwebtoken"
-import { UserData } from "../model"
+import { UserData } from "../models"
 import { DbUser } from "./models"
 
 

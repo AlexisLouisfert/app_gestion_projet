@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose'
 import uniqueValidator from "mongoose-unique-validator"
 import httpErrors from "mongoose-errors"
-import { Blacklist, UserData, UserDetails } from '../model'
+import { Blacklist, UserData, UserDetails } from '../models'
 
 const dbUserSchema = new Schema({
   name: {
