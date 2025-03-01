@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Button, Box, Typography, Chip } from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
 import type { Story } from '../types';
 import StoryForm from '../component/StoryForm';
 

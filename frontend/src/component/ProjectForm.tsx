@@ -145,7 +145,7 @@ export default function ProjectForm({ open, onClose, initialData }: ProjectFormP
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Annuler</Button>
-          <Button onClick={onClose} type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary">
             {initialData ? 'Modifier' : 'Créer'}
           </Button>
         </DialogActions>

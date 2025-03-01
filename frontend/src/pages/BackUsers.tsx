@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Button, Box, Typography } from '@mui/material';
-import UserForm from '../component/UserForm';
-import { User } from '../types';
+// import UserForm from '../component/UserForm';
+// import { User } from '../types';
 
 export default function BackUsers() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | undefined>();
+  // const [isFormOpen, setIsFormOpen] = useState(false);
+  // const [selectedUser, setSelectedUser] = useState<User | undefined>();
   const [users, setUsers] = useState([])
 
   useEffect(() => {

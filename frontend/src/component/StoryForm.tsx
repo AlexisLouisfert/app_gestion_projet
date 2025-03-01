@@ -72,7 +72,7 @@ export default function StoryForm({ open, onClose, onSubmit, initialData }: Stor
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Annuler</Button>
-          <Button onClick={onClose} type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary">
             {initialData ? 'Modifier' : 'Créer'}
           </Button>
         </DialogActions>

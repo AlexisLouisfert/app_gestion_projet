@@ -4,6 +4,7 @@ import httpErrors from "mongoose-errors"
 
 const dbTaskSchema = new Schema({
     name: { type: String, required: true },
+    description: { type: String, required: true },
     done: { type: Boolean,required: true },
     tasks:[{type:mongoose.Types.ObjectId,ref:'Task'}]
 })
